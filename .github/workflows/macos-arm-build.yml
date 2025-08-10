@@ -21,11 +21,11 @@ jobs:
       - name: Install deps (root/extensions)
         run: npm ci
       - name: Compile core (with mangling)
-        run: npm run gulp compile-build
+        run: npm run compile-build
       - name: Compile extensions (build)
-        run: npm run gulp compile-extensions-build
+        run: npm run compile-extensions-build
       - name: Minify vscode (build)
-        run: npm run gulp minify-vscode
+        run: npm run minify-vscode
       - name: Package darwin arm64 (min-ci)
         run: npm run gulp vscode-darwin-arm64-min-ci
       - name: Package darwin app zip
