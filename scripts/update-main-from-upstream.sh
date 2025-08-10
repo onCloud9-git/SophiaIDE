@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Sync local main with upstream/main (fast-forward), without pushing
+# Sync local main with upstream/main (fast-forward), no push
 branch=main
 
-git fetch upstream origin --prune
+# Fetch each remote separately to avoid non-FF or permission issues on origin
+(git fetch upstream --prune || true)
+(git fetch origin --prune || true)
+
 if git rev-parse --verify "$branch" >/dev/null 2>&1; then
   git checkout "$branch"
 else
