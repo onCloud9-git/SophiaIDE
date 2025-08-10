@@ -11,8 +11,8 @@ else
   git checkout -B "$branch" "$base"
 fi
 
-git rebase "$base"
-echo "Rebased $branch on $base"
+git merge --no-ff "$base"
+echo "Merged base into $branch"
 
 if [[ "$current" != "$branch" ]]; then
   git checkout "$current"
