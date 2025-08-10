@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+PROTECTED_BRANCHES=${PROTECTED_BRANCHES:-"main"}
+while read -r local_ref local_sha remote_ref remote_sha; do
+  for b in $PROTECTED_BRANCHES; do
+    if [[ "$remote_ref" == "refs/heads/$b" ]]; then echo "Protected branch: $b. Push via PR only." >&2; exit 1; fi
+  done
+done
+exit 0

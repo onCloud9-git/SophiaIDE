@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+MSG_FILE=$1
+FEATURE_BRANCH=${FEATURE_BRANCH:-sophia}
+PROTECTED_BRANCHES=${PROTECTED_BRANCHES:-"main"}
+CORE_CHANGE_PATHS=${CORE_CHANGE_PATHS:-"src/ build/ cli/ remote/"}
+OVERRIDE_TOKEN=${OVERRIDE_TOKEN:-"ALLOW-CORE-CHANGE"}
+changed=$(git diff --cached --name-only)
+[[ -z "$changed" ]] && exit 0
+msg=$(cat "$MSG_FILE")
+needs_override=0
+for p in $CORE_CHANGE_PATHS; do
+  if echo "$changed" | grep -E "^$p" >/dev/null 2>&1; then needs_override=1; break; fi
+done
+if [[ "$needs_override" -eq 1 ]] && ! echo "$msg" | grep -q "$OVERRIDE_TOKEN"; then
+  echo "Commit touches core paths ($CORE_CHANGE_PATHS). Add token: $OVERRIDE_TOKEN" >&2; exit 1
+fi
+exit 0
