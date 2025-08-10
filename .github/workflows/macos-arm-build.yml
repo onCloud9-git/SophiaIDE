@@ -21,7 +21,7 @@ jobs:
       - name: Install deps (root/extensions)
         run: npm ci
       - name: Build product (darwin arm64, non-min)
-        run: npm run gulp vscode-darwin-arm64
+        run: npm run gulp vscode-darwin-arm64-min-ci
       - name: Package darwin app
         run: |
           set -e
@@ -29,7 +29,7 @@ jobs:
           if [ -d VSCode-darwin-arm64 ]; then
             cd VSCode-darwin-arm64
           elif [ -d vscode-darwin-arm64 ]; then
-            cd vscode-darwin-arm64
+            cd vscode-darwin-arm64-min-ci
           else
             echo "No darwin-arm64 folder found in .build" >&2
             ls -la
