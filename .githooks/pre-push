@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Prevent pushing directly to main
+protected=main
+current=$(git rev-parse --abbrev-ref HEAD)
+if [[ "$current" == "$protected" ]]; then
+  echo "Protected branch: $protected. Push via PR only." >&2
+  exit 1
+fi
