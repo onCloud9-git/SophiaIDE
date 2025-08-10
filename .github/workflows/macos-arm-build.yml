@@ -20,24 +20,24 @@ jobs:
           cache: npm
       - name: Install deps (root/extensions)
         run: npm ci
-      - name: Build product (darwin arm64, non-min)
+      - name: Compile core (with mangling)
+        run: npm run gulp compile-build
+      - name: Compile extensions (build)
+        run: npm run gulp compile-extensions-build
+      - name: Minify vscode (build)
+        run: npm run gulp minify-vscode
+      - name: Package darwin arm64 (min-ci)
         run: npm run gulp vscode-darwin-arm64-min-ci
-      - name: Package darwin app
+      - name: Package darwin app zip
         run: |
           set -e
           cd .build
-          if [ -d VSCode-darwin-arm64 ]; then
-            cd VSCode-darwin-arm64
-          elif [ -d vscode-darwin-arm64 ]; then
-            cd vscode-darwin-arm64-min-ci
-          else
-            echo "No darwin-arm64 folder found in .build" >&2
-            ls -la
-            exit 1
-          fi
-          zip -qry ../../VSCode-darwin-arm64.zip .
-          cd ../..
-          ls -la VSCode-darwin-arm64.zip || true
+          folder=""
+          if [ -d VSCode-darwin-arm64 ]; then folder=VSCode-darwin-arm64; fi
+          if [ -z "$folder" ] && [ -d vscode-darwin-arm64 ]; then folder=vscode-darwin-arm64; fi
+          if [ -z "$folder" ]; then echo "No darwin-arm64 folder found in .build" >&2; ls -la; exit 1; fi
+          (cd "$folder" && zip -qry ../../VSCode-darwin-arm64.zip .)
+          ls -la ../VSCode-darwin-arm64.zip || true
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
