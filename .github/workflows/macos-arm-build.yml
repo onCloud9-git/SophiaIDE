@@ -1,0 +1,31 @@
+name: macOS arm64 Build (SophiaIDE)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ sophia ]
+
+jobs:
+  build-darwin-arm64:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install deps (root/extensions)
+        run: |
+          npm ci
+      - name: Build product (darwin arm64, non-min)
+        run: |
+          npm run gulp vscode-darwin-arm64
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sophiaide-darwin-arm64
+          path: |
+            .build/**
+            build/**/*.log
+          if-no-files-found: warn
