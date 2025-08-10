@@ -8,10 +8,10 @@ on:
 jobs:
   build-darwin-arm64:
     runs-on: macos-14
-    steps:
-      - uses: actions/checkout@v4
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v4
