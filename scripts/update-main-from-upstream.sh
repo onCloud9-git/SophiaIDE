@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Sync local main with upstream/main (fast-forward), push to origin
+# Sync local main with upstream/main (fast-forward), without pushing
 branch=main
 
 git fetch upstream origin --prune
@@ -16,5 +16,3 @@ else
   echo "Non-FF update required. Consider rebase: git rebase upstream/$branch" >&2
   exit 2
 fi
-
-git push -u origin "$branch" || true

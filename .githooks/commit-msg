@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+MSG_FILE=$1
+# Load config if present
+if [[ -f safe-fork.config ]]; then
+  # shellcheck disable=SC1091
+  source safe-fork.config
+else
+  FEATURE_BRANCH=${FEATURE_BRANCH:-sophia}
+  PROTECTED_BRANCHES=${PROTECTED_BRANCHES:-"main"}
+  CORE_CHANGE_PATHS=${CORE_CHANGE_PATHS:-"src/ build/ cli/ remote/"}
+  OVERRIDE_TOKEN=${OVERRIDE_TOKEN:-"ALLOW-CORE-CHANGE"}
+fi
+
+# Get staged files
+changed=$(git diff --cached --name-only)
+# If nothing staged, allow
+[[ -z "$changed" ]] && exit 0
+
+# Read message
+msg=$(cat "$MSG_FILE")
+
+# Check for core changes
+needs_override=0
+for p in $CORE_CHANGE_PATHS; do
+  if echo "$changed" | grep -E "^$p" >/dev/null 2>&1; then
+    needs_override=1
+    break
+  fi
+done
+
+if [[ "$needs_override" -eq 1 ]]; then
+  if ! echo "$msg" | grep -q "$OVERRIDE_TOKEN"; then
+    echo "Commit touches core paths ($CORE_CHANGE_PATHS)." >&2
+    echo "Add override token to the commit message to proceed: $OVERRIDE_TOKEN" >&2
+    echo "Prefer editing extensions/, product.json, .SophisticIDE/, scripts/, resources/.* where applicable." >&2
+    exit 1
+  fi
+fi
+
+exit 0

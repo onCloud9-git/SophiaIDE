@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Prevent pushing directly to main
-protected=main
-current=$(git rev-parse --abbrev-ref HEAD)
-if [[ "$current" == "$protected" ]]; then
-  echo "Protected branch: $protected. Push via PR only." >&2
-  exit 1
-fi
+# Block pushing to protected branches regardless of current HEAD
+PROTECTED_BRANCHES=${PROTECTED_BRANCHES:-"main"}
+while read -r local_ref local_sha remote_ref remote_sha; do
+  for b in $PROTECTED_BRANCHES; do
+    if [[ "$remote_ref" == "refs/heads/$b" ]]; then
+      echo "Protected branch: $b. Push via PR only." >&2
+      exit 1
+    fi
+  done
+done
+exit 0
