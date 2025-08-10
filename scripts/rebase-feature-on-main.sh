@@ -4,9 +4,7 @@ set -euo pipefail
 branch=${1:-sophia}
 base=main
 current=$(git rev-parse --abbrev-ref HEAD)
-
 ./scripts/update-main-from-upstream.sh
-
 if git rev-parse --verify "$branch" >/dev/null 2>&1; then
   git checkout "$branch"
 else
