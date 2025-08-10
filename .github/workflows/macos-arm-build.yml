@@ -1,74 +1,51 @@
 name: macOS arm64 Build (SophiaIDE)
-name: macOS arm64 Build (SophiaIDE)
-
 
 on:
-on:
-  workflow_dispatch:
   workflow_dispatch:
   push:
-  push:
-    branches: [ sophia ]
     branches: [ sophia ]
 
-
-jobs:
 jobs:
   build-darwin-arm64:
-  build-darwin-arm64:
-    runs-on: macos-14
     runs-on: macos-14
     env:
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-    steps:
-      - uses: actions/checkout@v4
       - uses: actions/checkout@v4
         with:
-        with:
-          fetch-depth: 0
           fetch-depth: 0
       - uses: actions/setup-node@v4
-      - uses: actions/setup-node@v4
-        with:
         with:
           node-version: 22.18.0
-          node-version: 22.18.0
-      - name: Install deps (root/extensions)
+          cache: 'npm'
       - name: Install deps (root/extensions)
         run: |
-        run: |
-          npm ci
           npm ci
       - name: Build product (darwin arm64, non-min)
+        run: |
+          npm run gulp vscode-darwin-arm64
       - name: Package darwin app
         run: |
-          cd .build && if [ -d VSCode-darwin-arm64 ]; then cd VSCode-darwin-arm64 && zip -qry ../../VSCode-darwin-arm64.zip .; elif [ -d vscode-darwin-arm64 ]; then cd vscode-darwin-arm64 && zip -qry ../../VSCode-darwin-arm64.zip .; else echo "No darwin-arm64 folder found"; fi
-          ls -la .. | sed "s/^/  /"
-      - name: Build product (darwin arm64, non-min)
-        run: |
-        run: |
-          npm run gulp vscode-darwin-arm64
-          npm run gulp vscode-darwin-arm64
-      - name: Package app (zip) and upload
-      - name: Package app (zip) and upload
+          set -e
+          cd .build
+          if [ -d VSCode-darwin-arm64 ]; then
+            cd VSCode-darwin-arm64
+          elif [ -d vscode-darwin-arm64 ]; then
+            cd vscode-darwin-arm64
+          else
+            echo "No darwin-arm64 folder found in .build" >&2
+            ls -la
+            exit 1
+          fi
+          zip -qry ../../VSCode-darwin-arm64.zip .
+          cd ../..
+          ls -la VSCode-darwin-arm64.zip || true
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
-        uses: actions/upload-artifact@v4
+        with:
+          name: sophiaide-darwin-arm64
           path: |
             VSCode-darwin-arm64.zip
             .build/**
             build/**/*.log
-        with:
-        with:
-          name: sophiaide-darwin-arm64
-          name: sophiaide-darwin-arm64
-          path: |
-          path: |
-            .build/**
-            .build/**
-            build/**/*.log
-            build/**/*.log
-          if-no-files-found: warn
           if-no-files-found: warn
