@@ -2,13 +2,23 @@
 
 Cel: zachować pełną zgodność z upstream VS Code, nie psując forka.
 
+## Szybki start
+- Uruchom synchronizację i testy:
+  ```bash
+  ./scripts/safe-sync.sh
+  ```
+- Pracuj WYŁĄCZNIE na gałęzi `sophia`, nigdy na `main`.
+- Po zmianach:
+  ```bash
+  ./scripts/ci-checks.sh
+  git push -u origin sophia
+  # utwórz PR do main
+  ```
+
 ## Zasady absolutne
 - NIE PUSHUJ na `main`. Twórz PR z gałęzi funkcjonalnych (domyślnie `sophia`).
-- Zanim cokolwiek zmienisz, uruchom: `./scripts/safe-sync.sh`.
-- Preferuj zmiany w:
-  - `extensions/`, `product.json`, `resources/` (branding), `.SophisticIDE/`, `scripts/`, plikach `*.md`.
-- NIE edytuj core (`src/`, `build/`, `cli/`, `remote/`), chyba że jest to krytyczne. Jeśli MUSISZ:
-  - W treści commita dodaj token: `ALLOW-CORE-CHANGE`.
+- Preferuj zmiany w: `extensions/`, `product.json`, `resources/` (branding), `.SophisticIDE/`, `scripts/`, plikach `*.md`.
+- NIE edytuj core (`src/`, `build/`, `cli/`, `remote/`), chyba że jest to krytyczne. Jeśli MUSISZ, w treści commita dodaj token: `ALLOW-CORE-CHANGE`.
 
 ## Dozwolone operacje
 - Dodawanie/aktualizacja rozszerzeń, motywów, ikon i konfiguracji produktu.
@@ -26,14 +36,13 @@ Cel: zachować pełną zgodność z upstream VS Code, nie psując forka.
    ./scripts/safe-sync.sh
    ```
 2. Wprowadzaj zmiany na gałęzi `sophia`.
-3. Uruchom testy lokalne:
+3. Testy lokalne:
    ```bash
    ./scripts/ci-checks.sh
    ```
-4. Wypchnij gałąź i utwórz PR:
+4. Push i PR:
    ```bash
    git push -u origin sophia
-   # utwórz PR w GitHub (lub gh pr create)
    ```
 
 ## Patche (opcjonalnie)
@@ -41,7 +50,7 @@ Cel: zachować pełną zgodność z upstream VS Code, nie psując forka.
   ```bash
   ./scripts/export-patches.sh sophia
   ```
-- Aplikacja na świeżą gałąź:
+- Aplikacja:
   ```bash
   ./scripts/apply-patches.sh sophia-next
   ```
@@ -50,9 +59,13 @@ Cel: zachować pełną zgodność z upstream VS Code, nie psując forka.
 - `pre-push`: blokuje push refa `main`.
 - `commit-msg`: blokuje commity dotykające core bez `ALLOW-CORE-CHANGE`.
 
-## Zasady edycji dla Agenta
-- Edytuj tylko pliki i katalogi wymienione w „Dozwolone operacje”.
-- Nie zmieniaj konfiguracji hooków i polityk bez zgody.
-- Nie twórz nowych folderów w `src/` bez tokenu i opisu celu.
-- Zachowaj styl i linter projektu.
+## Konfiguracja automatu
+- `safe-fork.config`:
+  - `FEATURE_BRANCH="sophia"`
+  - `PROTECTED_BRANCHES="main"`
+  - `CORE_CHANGE_PATHS="src/ build/ cli/ remote/"`
+  - `OVERRIDE_TOKEN="ALLOW-CORE-CHANGE"`
+
+## Uwaga dla powłoki
+- Uruchamiaj komendy linia-po-linii (zsh potrafi źle parsować komentarze na końcu linii).
 

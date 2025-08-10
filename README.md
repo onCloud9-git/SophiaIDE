@@ -1,3 +1,9 @@
+<!-- SophiaIDE Safe Fork quick links -->
+## SophiaIDE (Safe Fork)
+- Szybki start: uruchom `./scripts/safe-sync.sh` i pracuj na gałęzi `sophia`
+- Pełna instrukcja: [README-SOPHIA.md](README-SOPHIA.md)
+- Instrukcje dla agenta AI: [AI_AGENT_README.md](AI_AGENT_README.md)
+
 # Visual Studio Code - Open Source ("Code - OSS")
 
 [![Feature Requests](https://img.shields.io/github/issues/microsoft/vscode/feature-request.svg)](https://github.com/microsoft/vscode/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc)
