@@ -27,7 +27,7 @@ jobs:
       - name: Minify vscode (build)
         run: npm run gulp minify-vscode
       - name: Package darwin arm64 (min-ci)
-        run: npm run gulp vscode-darwin-arm64-min-ci
+        run: npm run gulp vscode-darwin-arm64-min
       - name: Package darwin app zip
         run: |
           set -e
