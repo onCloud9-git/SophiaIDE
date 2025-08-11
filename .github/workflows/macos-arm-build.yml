@@ -21,7 +21,7 @@ jobs:
       - name: Install deps (root/extensions)
         run: npm ci
       - name: Compile (fast, no mangling)
-        run: npm run gulp compile-build
+        run: npm run gulp compile-build-without-mangling
       - name: Compile extensions (build)
         run: npm run gulp compile-extensions-build
       - name: Minify vscode (build)
