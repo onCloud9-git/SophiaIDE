@@ -20,8 +20,8 @@ jobs:
           cache: npm
       - name: Install deps (root/extensions)
         run: npm ci
-      - name: Compile core (with mangling)
-        run: npm run gulp compile-build-with-mangling
+      - name: Compile (fast, no mangling)
+        run: npm run gulp compile-build
       - name: Compile extensions (build)
         run: npm run gulp compile-extensions-build
       - name: Minify vscode (build)
